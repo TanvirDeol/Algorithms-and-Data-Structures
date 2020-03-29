@@ -1,48 +1,53 @@
 #include <bits/stdc++.h>
 
 using namespace std;
+typedef pair<int, int>  pi;
+#define mp make_pair
+#define vec vector
 
-struct edge { int to, length; };
-
-int dijkstra(const vector< vector<edge> >& graph, int source, int target) {
-    vector<int> min_distance(graph.size(), INT_MAX);
-    min_distance[source] = 0;
-    set< pair<int, int> > active_vertices;
-    active_vertices.insert({ 0,source });
-
-    while (!active_vertices.empty()) {
-        int where = active_vertices.begin()->second;
-        if (where == target) return min_distance[where];
-        active_vertices.erase(active_vertices.begin());
-        for (auto ed : graph[where])
-            if (min_distance[ed.to] > min_distance[where] + ed.length) {
-                active_vertices.erase({ min_distance[ed.to], ed.to });
-                min_distance[ed.to] = min_distance[where] + ed.length;
-                active_vertices.insert({ min_distance[ed.to], ed.to });
+vec<int> dijkstra(vec<vec<pi> >adj, int src, int N) {
+    priority_queue<pi> pq;
+    vec<int> dist(N, INT_MAX);
+    pq.push({ 0,src });
+    dist[src] = 0;
+    while (!pq.empty()) {
+        int cur = pq.top().second;
+        pq.pop();
+        vector<pi> ::iterator i;
+        for (i = adj[cur].begin(); i < adj[cur].end(); i++) {
+            int n = i->first;
+            int len = i->second;
+            if (dist[n] > dist[cur] + len) {
+                dist[n] = dist[cur] + len;
+                pq.push(mp(dist[n], n));
             }
+        }
     }
-    return INT_MAX;
+    return dist;
 }
 
 int main()
 {
-    int N, E, src, tar;
-    cin >> N >> E >> src >> tar;
+    int N, E;
+    cin >> N >> E;
 
-    vector<vector<edge> > graph;
+    vec<vec<pi> > graph;
     for (int i = 0; i < N; i++) {
-        vector<edge> ve;
+        vec<pi> ve;
         graph.push_back(ve);
     }
     for (int i = 0; i < E; i++) {
-        int st, len, dst;
-        cin >> st >> len >> dst;
-        edge temp; temp.length = len;
-        temp.to = dst;
-        graph[st].push_back(temp);
+        int st, len, end;
+        cin >> st >> len >> end;
+        graph[st].push_back({ end,len });
+        graph[end].push_back({ st,len });
+    }
+    vec<int> res = dijkstra(graph, 0, N);
+
+    for (int i = 0; i < res.size(); i++) {
+        cout << res[i] << endl;
     }
 
-    for (int i = 0; i < N; i++) {
-        cout << dijkstra(graph, src, i) << endl;
-    }
+
+    return 0;
 }
