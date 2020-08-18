@@ -46,17 +46,17 @@ int lognquery(int l, int r){
     int len = r-l+1;
     int res = INT_MAX;
     int p;
-    while(len){
+    while(len>0 && l<r){
         p = log_2[len];
         res = min(res,sp[p][l]);
-        l+=p+1;
-        len-=p;
+        l+=(1<<p)+1;
+        len-=(1<<p);
     }
     return res;
 }
 
 int main() {
-    int N; cin>>N;
+    int N,Q; cin>>N>>Q;
     vi arr(N);
     F0R(i,N)cin>>arr[i];
 
@@ -64,12 +64,20 @@ int main() {
     FOR(i,2,N+1) log_2[i]=log_2[i/2]+1;
     P = log_2[N];
 
-    sp.resize(P+1,vi(N+1,0));
+    sp.resize(P+1,vi(N,0));
+    for(int i=0;i<=N;i++) sp[0][i]=arr[i];
     for(int q=1;q<=P;q++){
         for(int i=0;i+(1<<q)<=N;i++){
             sp[q][i]=min(sp[q-1][i],sp[q-1][i+(1<<q-1)]);
         }
     }
-    
+    for(vi v:sp){
+        for(int x:v)cout<<x<<" ";
+        cout<<endl;
+    }
+    F0R(i,Q){
+        int l,r; cin>>l>>r;
+        cout<<o1query(l,r)<<" and "<<lognquery(l,r)<<endl;
+    }
  	return 0;
 }
