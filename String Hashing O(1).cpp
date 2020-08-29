@@ -36,7 +36,7 @@ const ll INF = 1e18;
 const int MAX = 1e6;
 
 int main() {
-    //find number of occurences of substring p in string s
+        //find number of occurences of substring p in string s
     string s,p; cin>>s>>p;
     int A = 47;
     vl hash(s.size(),(ll)0);
@@ -56,7 +56,7 @@ int main() {
     }
     ll compHash = chsh[chsh.size()-1];
     int cnt=0;
-    for(int i=s.size()-1;i>=p.size()-1;i--){
+    for(int i=s.size()-1;i>=(int)(p.size()-1);i--){
         if(i-p.size()==-1){
             ll h = hash[i]%MOD; 
             if(h==compHash)cnt++;
