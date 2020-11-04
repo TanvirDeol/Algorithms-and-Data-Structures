@@ -58,34 +58,33 @@ namespace io {
 }
 
 using namespace io;
+//ideas from cp-algorthims
 
 int N;
-unordered_map<int,vi>graph; //node ids must be distinct
+map<int,vi>graph; //node ids must be distinct
 int logn; 
 vector<vi>up; //ancestor table for 2^ith ancestor
-vi lvl; //depth arr
+vi tin,tout; //time of entering node and exiting node after all its children
+int timer;
 
 void dfs(int u,int par){ //creates ancestor table
+    tin[u]= ++timer;
     up[u][0]=par;
     for(int i=1;i<=logn;i++) up[u][i]=up[up[u][i-1]][i-1]; //recurrence formula
     for(int x:graph[u]){ //dfs for all edges
-        if(x!=par){
-            lvl[x]=lvl[u]+1;
-            dfs(x,u); 
-        }
+        if(x!=par) dfs(x,u); 
     }
+    tout[u]= ++timer;
+}
+bool ancestor(int u,int v){
+    return (tin[u] <= tin[v]) && (tout[u] >= tout[v]); //if u was entered b4 v and exited after v, its an ancestor
 }
 int lca(int u,int v){
-    if(lvl[u]<lvl[v])swap(u,v); //make u always below v
-    for(int i=logn;i>=0;i--){ //move u to the same lvl as v
-        if(lvl[u]-pow(2,i)<=lvl[v]){
-            u=up[u][i];
-        }
-    }
-    if(u==v)return u; //for if v = ancestor(u)
+    if(ancestor(u,v))return u; 
+    if(ancestor(v,u))return v;
     for(int i=logn;i>=0;i--){ //goes up tree to find x, which is !ancestor of u and v
-        if(up[u][i]!=up[v][i]){
-            u=up[u][i]; v=up[v][i];
+        if(!ancestor(up[u][i],v)){
+            u=up[u][i];
         }
     }
     return up[u][0]; //returns parent of x
@@ -94,15 +93,15 @@ int lca(int u,int v){
 int main() {
     cin>>N;
     logn = (int)ceil(log2(N));
-    up.resize(N+1,vi(logn+1,-1));
-    lvl.resize(N+1);
+    up.resize(N+1,vi(logn+1));
+    tin.resize(N);
+    tout.resize(N);
+    timer=0;
     int a,b;
     F0R(i,N-1){
         cin>>a>>b;
         graph[a].pb(b);
     }
-    dfs(1,1);
-    print2dArr(up,up.size(),up[0].size());
-    cout<<lca(4,5)<<endl;
+    //dfs(root,root)
     return 0;
 }
