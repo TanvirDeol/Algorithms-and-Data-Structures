@@ -5,7 +5,7 @@ typedef long double ll;
 
 
 void add(vector<int> &seg, int len, int idx, int val) { // 1-based indexing
-    seg[idx+=len]+=val;
+    seg[idx+=len]=val;
     for (idx/=2;idx>=1;idx/=2) 
     seg[idx] = seg[2*idx] + seg[2*idx+1]; 
 }
