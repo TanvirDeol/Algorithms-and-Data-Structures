@@ -4,16 +4,14 @@ using namespace std;
 typedef long double ll;
 
 
-int N; 
-
-void add(vector<int> &seg, int idx, int val) { // 1-based indexing
-    seg[idx+=N]+=val;
+void add(vector<int> &seg, int len, int idx, int val) { // 1-based indexing
+    seg[idx+=len]+=val;
     for (idx/=2;idx>=1;idx/=2) 
     seg[idx] = seg[2*idx] + seg[2*idx+1]; 
 }
 
-ll query(vector<int> &seg, int l, int r) {  //interval [l, r]
-  ll res = 0; l+=N; r+=N;
+ll query(vector<int> &seg, int len, int l, int r) {  //interval [l, r]
+  ll res = 0; l+=len; r+=len;
   while(l<=r){
       if(l&1)res+=seg[l++];
       if(!(r&1))res+=seg[r--];
@@ -23,21 +21,20 @@ ll query(vector<int> &seg, int l, int r) {  //interval [l, r]
 }
 
 int main() {
+  int N;
   cin>>N;
   vector<int> segs; 
-  segs.resize(2*(N+1));
+  segs.resize(2*(N+5));
   char c; 
   int a,b;
   while (true) {
       scanf("%c %d %d", &c, &a, &b);
       if (c == 'A'){
-          add(segs, a, b);
+          add(segs, N, a, b);
       }
       else if (c == 'Q') {
-          cout << "SUM: " << query(segs, a, b) << endl;
+          cout << "SUM: " << query(segs, N, a, b) << endl;
       }
   }
-  
-  
   return 0;
 }
