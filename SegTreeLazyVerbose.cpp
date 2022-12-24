@@ -54,7 +54,7 @@ void update(int pos, int tree_l, int tree_r, int l, int r, int val) {
         return;
     }
     if (l == tree_l && r == tree_r) {
-        tree[pos] = val;
+        tree[pos] = val * (tree_r - tree_l + 1);
         marked[pos] = true;
     }
     else {
